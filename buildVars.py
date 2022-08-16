@@ -29,7 +29,7 @@ addon_info = {
 		"The settings are located in the NVDA menu -> Preferences -> Settings... -> URL player."
 	),
 	# version
-	"addon_version": "0.6.1",
+	"addon_version": "0.6.2,
 	# Author(s)
 	"addon_author": "Danstiv <danstiv@yandex.ru>",
 	# URL for the add-on documentation support
@@ -54,7 +54,7 @@ addon_info = {
 # pythonSources = ["addon/globalPlugins/*.py"]
 # For more information on SCons Glob expressions please take a look at:
 # https://scons.org/doc/production/HTML/scons-user/apd.html
-pythonSources = ['addon/globalPlugins/*.py']
+pythonSources = ['addon/globalPlugins/URLPlayer/*.py']
 
 # Files that contain strings for translation. Usually your python sources
 i18nSources = pythonSources + ["buildVars.py"]

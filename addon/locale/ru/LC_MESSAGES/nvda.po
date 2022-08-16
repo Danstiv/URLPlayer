@@ -1,0 +1,212 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the URLPlayer package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: URLPlayer 0.6.1\n"
+"Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
+"POT-Creation-Date: 2022-08-16 14:25+0700\n"
+"PO-Revision-Date: 2022-08-16 14:34+0700\n"
+"Last-Translator: Danstiv <dan7900@mail.ru>\n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:51
+msgid "Failed to connect to URL stream."
+msgstr "Не удалось подключиться к URL-потоку."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:53
+msgid "Lost connection to URL stream."
+msgstr "Потеряно соединение с URL-потоком."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:55
+msgid "URL stream is playing."
+msgstr "URL-поток воспроизводится."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:120
+msgid "No output devices found"
+msgstr "Устройства вывода не найдены"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:124
+msgid "URL not specified"
+msgstr "URL не указан"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:189
+msgid "Start / stop playback"
+msgstr "Запуск / остановка воспроизведения"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:199
+msgid "Stopped."
+msgstr "Остановлено."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:203
+msgid "Playing."
+msgstr "Воспроизводится."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:206
+msgid "Increase volume"
+msgstr "Увеличить громкость"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:213
+msgid "Increase volume by 5%"
+msgstr "Увеличить громкость на 5%"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:220
+msgid "Set maximum volume"
+msgstr "Установить максимальную громкость"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:227
+msgid "Decrease volume"
+msgstr "Уменьшить громкость"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:234
+msgid "Decrease volume by 5%"
+msgstr "Уменьшить громкость на 5%"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:241
+msgid "Set minimum volume"
+msgstr "Установить минимальную громкость"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:256
+msgid "Refresh device list"
+msgstr "Обновить список устройств"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:261
+msgid "Device list refreshed."
+msgstr "Список устройств обновлён."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:264
+msgid "Previous device"
+msgstr "Предыдущее устройство"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:271
+msgid "Next device"
+msgstr "Следующее устройство"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:279
+msgid "Devices not found."
+msgstr "Устройства не найдены."
+
+#. Default device
+#: addon\globalPlugins\URLPlayer\__init__.py:289
+msgid "Default device"
+msgstr "Устройство по умолчанию"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:298
+msgid "Get track name"
+msgstr "Получить название трека"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:305
+msgid "Unknown track"
+msgstr "Неизвестный трек"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:308
+msgid "URL stream is not playing."
+msgstr "URL-поток не воспроизводится."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:316
+msgid "Failed to get process information."
+msgstr "Не удалось получить информацию о процессе."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:320
+msgid "Add current window process to exceptions / remove from exceptions"
+msgstr "Добавить процесс текущего окна в исключения / убрать из исключений"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:330
+#, python-brace-format
+msgid "Process \"{process_name}\" removed from exceptions."
+msgstr "Процесс \"{process_name}\" удалён из исключений."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:333
+#, python-brace-format
+msgid "Process \"{process_name}\" added to exceptions."
+msgstr "Процесс \"{process_name}\" добавлен в исключения."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:336
+msgid "Get the peak value of the process of the current window"
+msgstr "Получить пиковое значение процесса текущего окна"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:346
+msgid "Unable to find audio session."
+msgstr "Не удалось найти аудио-сессию."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:349
+msgid "Failed to get peak value."
+msgstr "Не удалось получить пиковое значение."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:354
+msgid "Open addon settings"
+msgstr "Открыть настройки дополнения"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:361
+msgid "Enable / disable monitoring of other applications"
+msgstr "Включить / выключить мониторинг других приложений"
+
+#: addon\globalPlugins\URLPlayer\__init__.py:366
+msgid "Monitoring enabled"
+msgstr "Мониторинг включён."
+
+#: addon\globalPlugins\URLPlayer\__init__.py:366
+msgid "Monitoring disabled."
+msgstr "Мониторинг выключен."
+
+#: addon\globalPlugins\URLPlayer\interface.py:18
+msgid "Resume playback after NVDA start"
+msgstr "Возобновлять воспроизведение после запуска NVDA"
+
+#: addon\globalPlugins\URLPlayer\interface.py:20
+msgid "Pause playback if another application is playing audio"
+msgstr ""
+"Приостанавливать воспроизведение, если другое приложение проигрывает звук"
+
+#: addon\globalPlugins\URLPlayer\interface.py:23
+msgid "Process monitoring method"
+msgstr "Способ мониторинга процессов"
+
+#: addon\globalPlugins\URLPlayer\interface.py:23
+msgid "State"
+msgstr "Состояние"
+
+#: addon\globalPlugins\URLPlayer\interface.py:23
+msgid "Peak volume"
+msgstr "Пиковая громкость"
+
+#: addon\globalPlugins\URLPlayer\interface.py:25
+msgid "Minimum peak for triggering"
+msgstr "Минимальный пик для срабатывания"
+
+#: addon\globalPlugins\URLPlayer\interface.py:26
+msgid "Excluded processes (each process on a separate line)"
+msgstr "Исключённые процессы (каждый процесс на отдельной строке)"
+
+#: addon\globalPlugins\URLPlayer\interface.py:28
+msgid "Ignore background processes playing sound"
+msgstr "Игнорировать фоновые процессы, воспроизводящие звук"
+
+#. Add-on summary, usually the user visible name of the addon.
+#. Translators: Summary for this add-on
+#. to be shown on installation and add-on information found in Add-ons Manager.
+#: buildVars.py:23
+msgid "URL player"
+msgstr "URL player"
+
+#: buildVars.py:27
+msgid ""
+"A simple player to play internet radio.\n"
+"Control keys can be viewed and configured in the NVDA menu -> Options -> "
+"Input Gestures -> URL player.\n"
+"The settings are located in the NVDA menu -> Preferences -> Settings... -> "
+"URL player."
+msgstr ""
+"Простой плеер для воспроизведения интернет-радио.\n"
+"Клавиши для управления можно просмотреть и настроить в меню NVDA -> "
+"Параметры -> Жесты ввода -> URLPlayer.\n"
+"Настройки находятся в меню NVDA -> Параметры -> Настройки... -> URLPlayer."

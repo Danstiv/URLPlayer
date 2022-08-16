@@ -186,7 +186,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 break
 
     @script(
-        description=_('Start / stop'),
+        description=_('Start / stop playback'),
         gestures=['kb:nvda+control+shift+space', 'kb:pause'],
     )
     def script_player(self, gesture):
