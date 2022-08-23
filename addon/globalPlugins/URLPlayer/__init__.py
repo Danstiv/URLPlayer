@@ -367,7 +367,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.initialize()
 
     def event_foreground(self, obj, nextHandler):
-        if self.config['ignore_background_processes'] and self.sound_monitor.active_processes:
+        if self.config['pause_playback'] and self.config['ignore_background_processes'] and self.sound_monitor.active_processes:
             self.active_processes_callback()
         nextHandler()
 
