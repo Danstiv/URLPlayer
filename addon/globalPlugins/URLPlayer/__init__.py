@@ -335,6 +335,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         else:
             self.config['excluded_processes'].append(process_name)
             ui.message(_('Process "{process_name}" added to exceptions.').format(process_name=process_name))
+        self.active_processes_callback()
 
     @script(
         description=_('Get the peak value of the process of the current window'),
