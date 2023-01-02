@@ -70,7 +70,7 @@ class SoundMonitor:
                         continue
                     try:
                         callback = Callback(self, (session.Process.pid, session.Process.name()))
-                    except psutil.NoSuchProcess:
+                    except Exception:
                         continue
                     session.register_notification(callback)
                     self.registered_sessions[session.Process.pid] = session
@@ -83,7 +83,7 @@ class SoundMonitor:
                         continue
                     try:
                         process_info = [session.Process.pid, session.Process.name()]
-                    except psutil.NoSuchProcess:
+                    except Exception:
                         continue
                     peak = session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()
                     if peak>self.min_peak and process_info[0] not in self.active_processes:
