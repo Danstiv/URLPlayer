@@ -1,3 +1,5 @@
+import json
+
 import gui
 import wx
 
@@ -43,10 +45,10 @@ class TextCtrlConverter(BaseConverter):
 class MultilineTextListConverter(BaseConverter):
 
     def to_control(self, value):
-        self.control.SetValue('\n'.join(value))
+        self.control.SetValue('\n'.join(json.loads(value)))
 
     def to_config(self):
-        return self.control.GetValue().replace('\r', '').split('\n')
+        return json.dumps(self.control.GetValue().replace('\r', '').split('\n'))
 
 
 @converter(wx.Choice)

@@ -1,5 +1,6 @@
 import ctypes
 import enum
+import json
 import os
 import queue
 import sys
@@ -31,7 +32,7 @@ config.conf.spec['URLPlayer'] = {
     'url': 'string(default="")',
     'device': 'string(default=None)',
     'pause_playback': 'boolean(default=false)',
-    'excluded_processes': 'string_list()',
+    'excluded_processes': 'string(default="[\"nvda.exe\"]")',
     'ignore_background_processes': 'boolean(default=false)',
     'sound_monitor_type': 'integer(default=0)',
     'sound_monitor_min_peak': 'integer(default=0)',
@@ -69,8 +70,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.queue_monitor_thread.start()
         self.config = config.conf['URLPlayer']
         self.validate_config(self.config)
-        if 'excluded_processes' not in self.config:
-            self.config['excluded_processes'] = ['nvda.exe']
+        self.set_excluded_processes_to_instance()
         interface.add_settings(self.on_save_callback)
         playing = self.config['playing']
         self.config['playing'] = False
@@ -90,12 +90,18 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         for key in list(section):
             try:
                 value = section[key]
-            except configobj.validate.ValidateError:
+            except (configobj.validate.ValidateError, KeyError):
                 for profile in section.profiles:
                     profile.pop(key, None)
                 section._cache.pop(key, None)
             if isinstance(value, config.AggregatedSection):
                 self.validate_config(value)
+
+    def set_excluded_processes_to_instance(self):
+        self.excluded_processes = json.loads(self.config['excluded_processes'])
+
+    def set_excluded_processes_to_config(self):
+        self.config['excluded_processes'] = json.dumps(self.excluded_processes)
 
     def start_player(self):
         self.actions_queue.put(Action.START_PLAYER)
@@ -139,7 +145,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             self.start_player()
         self.initialized = True
 
-    on_save_callback = initialize
+    def on_save_callback(self):
+        self.set_excluded_processes_to_instance()
+        self.initialize()
 
     def active_processes_callback(self):
         if not self.config['pause_playback']:
@@ -149,7 +157,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         active_processes = dict(self.sound_monitor.active_processes)
         active_processes_count = len(active_processes)
         for pid, name in active_processes.items():
-            if (name in self.config['excluded_processes']) or (self.config['ignore_background_processes'] and (current_process_info == None or current_process_info[1] != name)):
+            if (name in self.excluded_processes) or (self.config['ignore_background_processes'] and (current_process_info == None or current_process_info[1] != name)):
                 active_processes_count -= 1
         if active_processes_count and self.config['playing'] and self.player.started:
             self.stop_player()
@@ -329,12 +337,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if not info:
             return
         process_name = info[1]
-        if process_name in self.config['excluded_processes']:
-            self.config['excluded_processes'].remove(process_name)
+        if process_name in self.excluded_processes:
+            self.excluded_processes.remove(process_name)
             ui.message(_('Process "{process_name}" removed from exceptions.').format(process_name=process_name))
         else:
-            self.config['excluded_processes'].append(process_name)
+            self.excluded_processes.append(process_name)
             ui.message(_('Process "{process_name}" added to exceptions.').format(process_name=process_name))
+        self.set_excluded_processes_to_config()
         self.active_processes_callback()
 
     @script(
