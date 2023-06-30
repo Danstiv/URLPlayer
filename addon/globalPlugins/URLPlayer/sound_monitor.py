@@ -2,11 +2,15 @@ import os
 import sys
 import threading
 
+
 sys.path.append(os.path.dirname(__file__))
 from .pycaw.callbacks import AudioSessionEvents
 from .pycaw.utils import AudioUtilities
 from pycaw.pycaw import IAudioMeterInformation
 sys.path.pop(-1)
+
+import comtypes
+
 from . import psutil
 
 
@@ -63,7 +67,12 @@ class SoundMonitor:
 
     def loop(self):
         while not self.stop_event.is_set():
-            sessions = AudioUtilities.GetAllSessions()
+            try:
+                # Here we can get an exception if, for example, there are no audio devices.
+                sessions = AudioUtilities.GetAllSessions()
+            except comtypes.COMError:
+                self.stop_event.wait(10)
+                continue
             if self.monitor_type==0:
                 for session in sessions:
                     if not session.Process or session.Process.pid in self.registered_sessions:
