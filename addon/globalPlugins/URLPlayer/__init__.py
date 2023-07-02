@@ -25,6 +25,7 @@ kernel32 = ctypes.windll.kernel32
 
 addonHandler.initTranslation()
 
+DEFAULT_EXCLUDED_PROCESSES_VALUE = '["nvda.exe"]'
 config.conf.spec['URLPlayer'] = {
     'volume': 'integer(default=5)',
     'playing': 'boolean(default=false)',
@@ -32,7 +33,7 @@ config.conf.spec['URLPlayer'] = {
     'url': 'string(default="")',
     'device': 'string(default=None)',
     'pause_playback': 'boolean(default=false)',
-    'excluded_processes': 'string(default="[\"nvda.exe\"]")',
+    'excluded_processes': f'string(default="{DEFAULT_EXCLUDED_PROCESSES_VALUE}")',
     'ignore_background_processes': 'boolean(default=false)',
     'sound_monitor_type': 'integer(default=0)',
     'sound_monitor_min_peak': 'integer(default=0)',
@@ -98,7 +99,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
                 self.validate_config(value)
 
     def set_excluded_processes_to_instance(self):
-        self.excluded_processes = json.loads(self.config['excluded_processes'])
+        try:
+            self.excluded_processes = json.loads(self.config['excluded_processes'])
+        except Exception:
+            self.excluded_processes = []
+            self.config['excluded_processes'] = DEFAULT_EXCLUDED_PROCESSES_VALUE
 
     def set_excluded_processes_to_config(self):
         self.config['excluded_processes'] = json.dumps(self.excluded_processes)
