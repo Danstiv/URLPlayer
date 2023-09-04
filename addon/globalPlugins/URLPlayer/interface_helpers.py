@@ -87,7 +87,7 @@ def bind_with_config(control, config_key, converter=None):
     return control
 
 
-class ConfigBoundSettingsPanel(gui.SettingsPanel):
+class ConfigBoundSettingsPanel(gui.settingsDialogs.SettingsPanel):
 
     def iter_controls(self, initial_control=None):
         if initial_control is None:
