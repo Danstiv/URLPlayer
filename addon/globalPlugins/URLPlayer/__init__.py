@@ -14,6 +14,7 @@ import configobj
 import globalPluginHandler
 import ui
 from scriptHandler import script
+import queueHandler
 
 from . import interface
 from . import psutil
@@ -40,6 +41,10 @@ config.conf.spec['URLPlayer'] = {
 }
 
 
+def thread_safe_message(*args, **kwargs):
+    queueHandler.queueFunction(queueHandler.eventQueue, ui.message, *args, **kwargs)
+
+
 class Action(enum.IntEnum):
     TERMINATE_QUEUE_MONITOR = enum.auto()
     START_PLAYER = enum.auto()
@@ -54,11 +59,11 @@ class URLPlayer(url_player.URLPlayer):
 
     def notify(self, event):
         if event==url_player.FAILED_TO_CONNECT:
-            ui.message(_('Failed to connect to URL stream.'))
+            thread_safe_message(_('Failed to connect to URL stream.'))
         if event==url_player.CONNECTION_LOST:
-            ui.message(_('Lost connection to URL stream.'))
+            thread_safe_message(_('Lost connection to URL stream.'))
         if event==url_player.PLAYBACK_STARTED:
-            ui.message(_('URL stream is playing.'))
+            thread_safe_message(_('URL stream is playing.'))
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
