@@ -143,6 +143,8 @@ class URLPlayer:
         try:
             debug('Calling bass init function.')
             bass_call(BASS_Init, self.device, 44100, 0, 0, None)
+            bass_call(BASS_SetConfig, BASS_CONFIG_CURVE_VOL, True)
+
             debug('bass initialized. Calling bass stream create url.')
             self.stream=bass_call(BASS_StreamCreateURL, self.url.encode(), 0, 0, DP, None)
             debug('Stream created. Applying volume to a stream.')
