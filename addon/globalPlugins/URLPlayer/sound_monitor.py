@@ -6,7 +6,7 @@ import threading
 sys.path.append(os.path.dirname(__file__))
 from .pycaw.callbacks import AudioSessionEvents
 from .pycaw.utils import AudioUtilities
-from pycaw.pycaw import IAudioMeterInformation
+from .pycaw.pycaw import IAudioMeterInformation
 sys.path.pop(-1)
 
 import comtypes
