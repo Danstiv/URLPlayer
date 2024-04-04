@@ -29,7 +29,7 @@ addon_info = {
 		"The settings are located in the NVDA menu -> Preferences -> Settings... -> URL player."
 	),
 	# version
-	"addon_version": "0.9.0",
+	"addon_version": "0.10.0",
 	# Author(s)
 	"addon_author": "Danstiv <danstiv@yandex.ru>",
 	# URL for the add-on documentation support
