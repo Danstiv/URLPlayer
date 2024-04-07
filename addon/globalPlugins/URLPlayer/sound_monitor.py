@@ -2,16 +2,11 @@ import os
 import sys
 import threading
 
-
-sys.path.append(os.path.dirname(__file__))
-from .pycaw.callbacks import AudioSessionEvents
-from .pycaw.utils import AudioUtilities
-from .pycaw.pycaw import IAudioMeterInformation
-sys.path.pop(-1)
-
 import comtypes
-
-from . import psutil
+import psutil
+from pycaw.callbacks import AudioSessionEvents
+from pycaw.utils import AudioUtilities
+from pycaw.api.endpointvolume import IAudioMeterInformation
 
 
 class Callback(AudioSessionEvents):

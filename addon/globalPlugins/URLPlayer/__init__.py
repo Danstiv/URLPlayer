@@ -13,11 +13,11 @@ import config
 import configobj
 import globalPluginHandler
 import ui
-from scriptHandler import script
+import psutil
 import queueHandler
+from scriptHandler import script
 
 from . import interface
-from . import psutil
 from . import pybass
 from . import sound_monitor
 from . import url_player
