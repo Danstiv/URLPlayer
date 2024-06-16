@@ -28,7 +28,7 @@ class SoundMonitor:
     def __init__(self, callback, monitor_type=0, min_peak=1):
         self.callback = callback
         self.monitor_type = monitor_type
-        self.min_peak = min_peak/100
+        self.min_peak = min_peak/1000000
         self.active_processes = {}
         self.registered_sessions = {}
         self.stop_event = threading.Event()

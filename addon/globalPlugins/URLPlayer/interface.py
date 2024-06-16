@@ -22,7 +22,7 @@ class URLPlayerSettingsPanel(ConfigBoundSettingsPanel):
         self.pause_playback_checkbox.Bind(wx.EVT_CHECKBOX, self.on_pause_playback_checkbox)
         self.sound_monitor_type_choice = bind_with_config(sizer.addLabeledControl(_('Process monitoring method'), wx.Choice, choices=[_('State'), _('Peak volume')]), 'sound_monitor_type')
         self.sound_monitor_type_choice.Bind(wx.EVT_CHOICE, self.on_sound_monitor_type_choice)
-        self.sound_monitor_min_peak_spin = bind_with_config(sizer.addLabeledControl(_('Minimum peak for triggering'), wx.SpinCtrl, min=0, max=100), 'sound_monitor_min_peak')
+        self.sound_monitor_min_peak_spin = bind_with_config(sizer.addLabeledControl(_('Minimum peak for triggering'), wx.SpinCtrl, min=0, max=1000000), 'sound_monitor_min_peak')
         self.excluded_processes_field = bind_with_config(sizer.addLabeledControl(_('Excluded processes (each process on a separate line)'), wx.TextCtrl, size=(300, 200), style=wx.TE_MULTILINE), 'excluded_processes', converter=MultilineTextListConverter)
         self.excluded_processes_field.Bind(wx.EVT_CHAR_HOOK, self.on_excluded_processes_field_char)
         self.ignore_background_processes_checkbox = bind_with_config(wx.CheckBox(self, label=_('Ignore background processes playing sound')), 'ignore_background_processes')
