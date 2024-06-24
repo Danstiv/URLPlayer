@@ -372,7 +372,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         except Exception:
             ui.message(_('Failed to get peak value.'))
             return
-        ui.message(f'{round(peak*1000000, 3)}%')
+        ui.message(f'{round(peak*1000000, 3)}')
 
     @script(
         description = _('Open addon settings'),
