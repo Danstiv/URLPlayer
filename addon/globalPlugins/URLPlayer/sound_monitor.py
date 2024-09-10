@@ -90,8 +90,6 @@ class SoundMonitor:
                     except Exception:
                         continue
                     peak = session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()
-                    # Remove strange near-zero fluctuations like 5.999999941330714e-10
-                    peak = round(peak, 6)
                     if peak>self.min_peak and process_info[0] not in self.active_processes:
                         self.active_processes[process_info[0]] = process_info[1]
                     elif peak<=self.min_peak and process_info[0] in self.active_processes:
