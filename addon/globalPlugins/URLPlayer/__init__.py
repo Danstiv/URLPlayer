@@ -1,4 +1,3 @@
-import ctypes
 import enum
 import json
 import os
@@ -18,11 +17,10 @@ import queueHandler
 from scriptHandler import script
 
 from . import interface
-from . import pybass
 from . import sound_monitor
 from . import url_player
 
-kernel32 = ctypes.windll.kernel32
+
 
 addonHandler.initTranslation()
 
@@ -389,19 +387,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.config['pause_playback'] = not self.config['pause_playback']
         ui.message(_('Monitoring enabled') if self.config['pause_playback'] else _('Monitoring disabled.'))
         self.initialize()
-
-    @script(
-        description=_('Reload bass library'),
-        gesture='kb:nvda+shift+pause',
-    )
-    def script_reload_bass(self, gesture):
-        if self.player:
-            self.stop_player()
-            self.player.wait_previous_thread()
-        kernel32.FreeLibrary(pybass.bass_module._handle)
-        pybass.bass_module = ctypes.WinDLL(os.path.dirname(__file__)+'/bass.dll')
-        self.initialize()
-        ui.message(_('Library reloaded'))
 
     def event_foreground(self, obj, nextHandler):
         if self.config['pause_playback'] and self.config['ignore_background_processes'] and self.sound_monitor.active_processes:
