@@ -1,16 +1,15 @@
-from ctypes import c_char_p
-from itertools import count
 import locale
 import threading
-try:
-    from .pybass import *
-except ImportError:
-    from pybass import *
+from ctypes import c_char_p
+from itertools import count
 from traceback import format_exc
 
+from .bass import bass, BassError
+from .bass.constants import BASS_ACTIVE_PLAYING, BASS_CONFIG_CURVE_VOL, BASS_ATTRIB_VOL, BASS_TAG_META, BASS_DEVICE_ENABLED, BASS_ERROR_DEVICE, BASS_ACTIVE_STALLED, BASS_ERROR_INIT
+from .bass.structures import BASS_DEVICEINFO
 DEBUG = False
 ENCODING = locale.getpreferredencoding(False)
-DP = DOWNLOADPROC(lambda *args: 0)
+
 FAILED_TO_CONNECT = 0
 PLAYBACK_STARTED = 1
 CONNECTION_LOST = 2
@@ -25,7 +24,6 @@ def debug(message):
 
 
 class URLPlayer:
-
     def __init__(self, device, url, volume):
         debug('init called')
         self.device = device
@@ -86,6 +84,7 @@ class URLPlayer:
             debug('failed to initialize bass.')
             status = 1
             self.notify(FAILED_TO_CONNECT)
+        stalled_iterations = 0
         debug('entering loop.')
         while not stop_event.is_set():
             debug('start itiration')
@@ -94,13 +93,19 @@ class URLPlayer:
                 if not self.stream:
                     debug('not self.stream, somethin broke. Exiting loop.')
                     break
-                if bass_call(BASS_ChannelIsActive, self.stream, zero_is_error=False)==BASS_ACTIVE_PLAYING:
-                    debug(f'active playing. Waiting event 1 s. Event state {stop_event.is_set()}')
+                stream_state = bass.BASS_ChannelIsActive(self.stream)
+                if stream_state == BASS_ACTIVE_STALLED:
+                    stalled_iterations += 1
+                else:
+                    stalled_iterations = 0
+                if  stream_state == BASS_ACTIVE_PLAYING or 1 <= stalled_iterations <= 2:
+                    debug(f'active playing or stalled recently, state {stream_state}. Waiting event 1 s. Event state {stop_event.is_set()}')
                     stop_event.wait(1)
                     debug(f'event.wait returned. Event state {stop_event.is_set()}. Next iteration.')
                     continue
                 else:
                     debug('Not active playing.')
+                    stalled_iterations = 0
                     status = 1
                     debug('Calling free.')
                     self.free()
@@ -121,13 +126,12 @@ class URLPlayer:
         stop_event.clear()
         debug('end loop')
 
-
     def set_volume(self, volume):
         debug('set volume called')
         self.volume = volume
         if self.stream:
             debug('self.stream is True. Calling bass function to apply volume.')
-            bass_call(BASS_ChannelSetAttribute, self.stream, BASS_ATTRIB_VOL, volume/100)
+            bass.BASS_ChannelSetAttribute(self.stream, BASS_ATTRIB_VOL, volume/100)
         debug('end set volume')
 
     def set_device(self, device):
@@ -142,18 +146,17 @@ class URLPlayer:
         debug('initialize called.')
         try:
             debug('Calling bass init function.')
-            bass_call(BASS_Init, self.device, 44100, 0, 0, None)
-            bass_call(BASS_SetConfig, BASS_CONFIG_CURVE_VOL, True)
-
+            bass.BASS_Init(self.device, 44100, 0, None, None)
+            bass.BASS_SetConfig(BASS_CONFIG_CURVE_VOL, True)
             debug('bass initialized. Calling bass stream create url.')
-            self.stream=bass_call(BASS_StreamCreateURL, self.url.encode(), 0, 0, DP, None)
+            self.stream=bass.BASS_StreamCreateURL(self.url.encode(), 0, 0, None, None)
             debug('Stream created. Applying volume to a stream.')
             self.set_volume(self.volume)
             debug('volume applied. Calling bass channel play.')
-            bass_call(BASS_ChannelPlay, self.stream, False)
+            bass.BASS_ChannelPlay(self.stream, False)
             debug('channel play called. Returning True')
             return True
-        except Exception:
+        except BassError:
             debug(f'Exception\n{format_exc()}')
             debug('calling free')
             self.free()
@@ -164,7 +167,11 @@ class URLPlayer:
         debug('free called. Resetting self.stream to None.')
         self.stream = None
         debug('self.stream reset. Calling bass free.')
-        BASS_Free()
+        try:
+            bass.BASS_Free()
+        except BassError as e:
+            if e.code != BASS_ERROR_INIT:
+                raise
         debug('bass free called.')
         debug('end free')
 
@@ -180,11 +187,12 @@ class URLPlayer:
             debug('self.stream is True. Trying to get track name.')
             try:
                 debug('Calling bass channel get tag.')
-                data = c_char_p(bass_call(BASS_ChannelGetTags, self.stream, BASS_TAG_META)).value
+                data = bass.BASS_ChannelGetTags(self.stream, BASS_TAG_META)
                 track_name = data[13:-2].decode()
                 debug('track name received.')
             except Exception:
                 debug(f'Exception\n{format_exc()}')
+                raise
         debug('Returning track name')
         return track_name
 
@@ -192,46 +200,28 @@ class URLPlayer:
 def get_devices():
     debug('get devices called.')
     devices = []
-    device_structure = BASS_DEVICEINFO()
+    device = BASS_DEVICEINFO()
     debug('Entering loop.')
-    for device in count(start=1):
-        debug(f'Trying get device {device}.')
+    for index in count(start=1):
+        debug(f'Trying get device {index}.')
         try:
             debug('calling bass get device info')
-            bass_call(BASS_GetDeviceInfo, device, device_structure)
+            bass.BASS_GetDeviceInfo(index, device)
             debug('called bass get device info')
-        except BassError as exc:
+        except BassError as e:
             debug(f'exception\n{format_exc()}')
-            if exc.code != 23:
+            if e.code != BASS_ERROR_DEVICE:
                 debug(f'code not 23. reraising')
                 raise
             debug('exiting loop.')
             break
-        if not BASS_DEVICE_ENABLED&device_structure.flags:
+        if not device.flags & BASS_DEVICE_ENABLED:
             debug('device disabled. Skipping')
             continue
         debug('Appending device.')
-        devices.append([device_structure.name.decode(ENCODING), device])
+        devices.append([device.name.decode(ENCODING), index])
     if devices:
         debug('Devices found. Adding default device.')
         devices.insert(0, [None, -1])
     debug(f'Returning {len(devices)} devices.')
     return devices
-
-
-class BassError(Exception):
-    def __init__(self, code):
-        self.code = code
-        self.description = get_error_description(code)
-
-    def __str__(self):
-        return f'Bass error {self.code}, {self.description}'
-    __repr__ = __str__
-
-
-def bass_call(function, *args, zero_is_error=True):
-    res = function(*args)
-    if (zero_is_error and res == 0) or res == -1:
-        code = BASS_ErrorGetCode()
-        raise BassError(code)
-    return res
