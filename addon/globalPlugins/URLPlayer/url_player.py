@@ -220,8 +220,5 @@ def get_devices():
             continue
         debug('Appending device.')
         devices.append([device.name.decode(ENCODING), index])
-    if devices:
-        debug('Devices found. Adding default device.')
-        devices.insert(0, [None, -1])
     debug(f'Returning {len(devices)} devices.')
     return devices
