@@ -82,6 +82,7 @@ class SoundMonitor:
                         self.update(callback.process_info, 1)
             if self.monitor_type==1:
                 updated = False
+                seen_pids = set()
                 for session in sessions:
                     if not session.Process:
                         continue
@@ -89,6 +90,9 @@ class SoundMonitor:
                         process_info = [session.Process.pid, session.Process.name()]
                     except Exception:
                         continue
+                    if process_info[0] in seen_pids:
+                        continue
+                    seen_pids.add(process_info[0])
                     peak = session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()
                     if peak>self.min_peak and process_info[0] not in self.active_processes:
                         self.active_processes[process_info[0]] = process_info[1]
