@@ -61,13 +61,16 @@ class SoundMonitor:
         self.start()
 
     def loop(self):
-        while not self.stop_event.is_set():
+        normal_delay = 0.25
+        delay = normal_delay
+        while not self.stop_event.wait(delay):
             try:
                 # Here we can get an exception if, for example, there are no audio devices.
                 sessions = AudioUtilities.GetAllSessions()
             except comtypes.COMError:
-                self.stop_event.wait(10)
+                delay = 10
                 continue
+            delay = normal_delay
             if self.monitor_type==0:
                 for session in sessions:
                     if not session.Process or session.Process.pid in self.registered_sessions:
@@ -82,18 +85,19 @@ class SoundMonitor:
                         self.update(callback.process_info, 1)
             if self.monitor_type==1:
                 updated = False
-                seen_pids = set()
+                process_peaks = {}
                 for session in sessions:
                     if not session.Process:
                         continue
                     try:
-                        process_info = [session.Process.pid, session.Process.name()]
+                        process_info = (session.Process.pid, session.Process.name())
                     except Exception:
                         continue
-                    if process_info[0] in seen_pids:
-                        continue
-                    seen_pids.add(process_info[0])
                     peak = session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()
+                    previously_detected_peak = process_peaks.get(process_info, 0)
+                    peak = max(previously_detected_peak, peak)
+                    process_peaks[process_info] = peak
+                for process_info, peak in process_peaks.items():
                     if peak>self.min_peak and process_info[0] not in self.active_processes:
                         self.active_processes[process_info[0]] = process_info[1]
                     elif peak<=self.min_peak and process_info[0] in self.active_processes:
@@ -103,7 +107,6 @@ class SoundMonitor:
                     updated = True
                 if updated:
                     self.callback()
-            self.stop_event.wait(0.25)
         if self.monitor_type==0:
             for session in AudioUtilities.GetAllSessions():
                 try:
