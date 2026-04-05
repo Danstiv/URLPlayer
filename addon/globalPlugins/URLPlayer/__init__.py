@@ -80,6 +80,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.config['playing'] = False
         self.player = None
         self.sound_monitor = None
+        self.last_foreground_process_id = None
         self.initialize()
         if not self.initialized:
             return
@@ -388,8 +389,26 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         ui.message(_('Monitoring enabled') if self.config['pause_playback'] else _('Monitoring disabled.'))
         self.initialize()
 
+    @property
+    def foreground_process_check_is_applicable(self):
+        return self.config['pause_playback'] and self.config['ignore_background_processes'] and self.sound_monitor.active_processes
+
     def event_foreground(self, obj, nextHandler):
-        if self.config['pause_playback'] and self.config['ignore_background_processes'] and self.sound_monitor.active_processes:
+        if self.foreground_process_check_is_applicable:
+            self.last_foreground_process_id = obj.appModule.processHandle
+            self.active_processes_callback()
+        nextHandler()
+
+    def event_gainFocus(self, obj, nextHandler):
+        # Needed for uwp apps like unigram,
+        # because when alt+tabbing to it, foreground app is ApplicationFrameHost,
+        # not real target process.
+        pid = obj.appModule.processHandle
+        if pid == self.last_foreground_process_id:
+            nextHandler()
+            return
+        self.last_foreground_process_id = pid
+        if self.foreground_process_check_is_applicable:
             self.active_processes_callback()
         nextHandler()
 
