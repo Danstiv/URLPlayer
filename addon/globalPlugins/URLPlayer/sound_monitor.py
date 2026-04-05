@@ -126,7 +126,10 @@ class SoundMonitor:
         self.callback()
 
 
-def get_peak(pid):
+def get_peak_by_process_name(name):
+    max_peak = None
     for session in AudioUtilities.GetAllSessions():
-        if session.Process and session.Process.pid==pid:
-            return session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()
+        if session.Process and session.Process.name() == name:
+            peak = session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()
+            max_peak = peak if max_peak is None else max(max_peak, peak)
+    return max_peak

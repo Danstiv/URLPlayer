@@ -363,14 +363,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         if not info:
             return
         try:
-            peak = sound_monitor.get_peak(info[0])
+            peak = sound_monitor.get_peak_by_process_name(info[1])
             if peak==None:
                 ui.message(_('Unable to find audio session.'))
                 return
         except Exception:
             ui.message(_('Failed to get peak value.'))
             return
-        ui.message(f'{round(peak*1000000, 3)}')
+        ui.message(f'{round(peak*1000000)}')
 
     @script(
         description = _('Open addon settings'),
